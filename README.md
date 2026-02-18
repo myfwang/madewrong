@@ -12,3 +12,6 @@ pnpm dev
 # or
 bun dev
 ```
+
+Using supabase for easy backend storage
+Resend to send email
