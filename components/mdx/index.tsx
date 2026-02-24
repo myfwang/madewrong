@@ -1,5 +1,15 @@
 import type { MDXComponents } from "mdx/types";
 import Image from "next/image";
+import React from "react";
+
+function Caption({ src, alt, caption }: { src: string; alt: string; caption: string }) {
+  return (
+    <figure style={{ margin: "1.5rem 0" }}>
+      <Image src={src} alt={alt} width={800} height={600} style={{ width: "100%", height: "auto", borderRadius: "0.5rem" }} />
+      <span style={{ display: "block", marginTop: "0.5rem", textAlign: "center", fontSize: "0.875rem", color: "#71717a" }}>{caption}</span>
+    </figure>
+  );
+}
 
 export const mdxComponents: MDXComponents = {
   h1: (props) => (
@@ -14,6 +24,7 @@ export const mdxComponents: MDXComponents = {
   a: (props) => (
     <a className="font-medium text-zinc-900 underline underline-offset-4 hover:text-zinc-600" {...props} />
   ),
+  Caption,
   img: (props) => (
     <Image
       className="my-6 rounded-lg"
@@ -21,7 +32,7 @@ export const mdxComponents: MDXComponents = {
       alt={props.alt || ""}
       width={800}
       height={500}
-      style={{ width: "100%", height: "auto" }}
+      style={{ width: "100%", height: "auto", ...(props.style as React.CSSProperties) }}
     />
   ),
 };
