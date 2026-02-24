@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 
 interface ImageGalleryProps {
@@ -11,8 +11,13 @@ interface ImageGalleryProps {
 export default function ImageGallery({ images, title }: ImageGalleryProps) {
   const [current, setCurrent] = useState(0);
   const [lightbox, setLightbox] = useState(false);
+  const [blocker, setBlocker] = useState<{ w: number; h: number } | null>(null);
+  const lightboxContainerRef = useRef<HTMLDivElement>(null);
 
   const closeLightbox = useCallback(() => setLightbox(false), []);
+
+  // Reset the click-blocker whenever the displayed image changes
+  useEffect(() => { setBlocker(null); }, [current]);
 
   useEffect(() => {
     if (!lightbox) return;
@@ -100,14 +105,14 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
 
       {/* Lightbox */}
       {lightbox && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90"
-          onClick={closeLightbox}
-        >
+        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+          {/* Backdrop — clicking this closes the lightbox */}
+          <div className="absolute inset-0 bg-black/90 cursor-pointer" onClick={closeLightbox} />
+
           {/* Close button */}
           <button
             onClick={closeLightbox}
-            className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full text-white/70 transition-colors hover:text-white"
+            className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full text-white/70 transition-colors hover:text-white"
             aria-label="Close"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -116,40 +121,61 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
             </svg>
           </button>
 
+          {/* Prev / Next arrows — siblings to image, positioned against the outer wrapper */}
+          {images.length > 1 && (
+            <>
+              <button
+                onClick={() => setCurrent((current - 1 + images.length) % images.length)}
+                className="absolute left-4 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+                aria-label="Previous image"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setCurrent((current + 1) % images.length)}
+                className="absolute right-4 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+                aria-label="Next image"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+            </>
+          )}
+
           {/* Enlarged image */}
-          <div className="relative h-[90vh] w-[90vw]">
+          <div
+            ref={lightboxContainerRef}
+            className="relative z-10 h-[90vh] w-[90vw]"
+            onClick={closeLightbox}
+          >
             <Image
               src={images[current]}
               alt={`${title} - image ${current + 1}`}
               fill
-              className="object-contain"
-              onClick={(e) => e.stopPropagation()}
+              className="object-contain pointer-events-none"
               sizes="90vw"
               unoptimized
+              onLoad={(e) => {
+                const img = e.currentTarget;
+                const container = lightboxContainerRef.current;
+                if (!container) return;
+                const { width: cW, height: cH } = container.getBoundingClientRect();
+                const aspect = img.naturalWidth / img.naturalHeight;
+                const w = aspect > cW / cH ? cW : cH * aspect;
+                const h = aspect > cW / cH ? cW / aspect : cH;
+                setBlocker({ w, h });
+              }}
             />
-
-            {/* Prev / Next arrows */}
-            {images.length > 1 && (
-              <>
-                <button
-                  onClick={(e) => { e.stopPropagation(); setCurrent((current - 1 + images.length) % images.length); }}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
-                  aria-label="Previous image"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="15 18 9 12 15 6" />
-                  </svg>
-                </button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); setCurrent((current + 1) % images.length); }}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
-                  aria-label="Next image"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="9 18 15 12 9 6" />
-                  </svg>
-                </button>
-              </>
+            {/* Transparent overlay sized to the visual image — stops clicks on the photo from closing */}
+            {blocker && (
+              <div
+                style={{ width: blocker.w, height: blocker.h }}
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                onClick={(e) => e.stopPropagation()}
+              />
             )}
           </div>
         </div>
