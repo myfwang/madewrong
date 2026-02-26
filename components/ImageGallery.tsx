@@ -16,15 +16,17 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
 
   const closeLightbox = useCallback(() => setLightbox(false), []);
 
-  // Reset the click-blocker whenever the displayed image changes
-  useEffect(() => { setBlocker(null); }, [current]);
+  const navigate = useCallback((updater: number | ((c: number) => number)) => {
+    setCurrent(updater);
+    setBlocker(null);
+  }, []);
 
   useEffect(() => {
     if (!lightbox) return;
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") closeLightbox();
-      if (e.key === "ArrowLeft") setCurrent((c) => (c - 1 + images.length) % images.length);
-      if (e.key === "ArrowRight") setCurrent((c) => (c + 1) % images.length);
+      if (e.key === "ArrowLeft") navigate((c) => (c - 1 + images.length) % images.length);
+      if (e.key === "ArrowRight") navigate((c) => (c + 1) % images.length);
     }
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
@@ -32,7 +34,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", onKey);
     };
-  }, [lightbox, images.length, closeLightbox]);
+  }, [lightbox, images.length, closeLightbox, navigate]);
 
   if (images.length === 0) return null;
 
@@ -57,7 +59,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
           {images.length > 1 && (
             <>
               <button
-                onClick={(e) => { e.stopPropagation(); setCurrent((current - 1 + images.length) % images.length); }}
+                onClick={(e) => { e.stopPropagation(); navigate((current - 1 + images.length) % images.length); }}
                 className="absolute left-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white transition-colors hover:bg-black/70"
                 aria-label="Previous image"
               >
@@ -66,7 +68,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
                 </svg>
               </button>
               <button
-                onClick={(e) => { e.stopPropagation(); setCurrent((current + 1) % images.length); }}
+                onClick={(e) => { e.stopPropagation(); navigate((current + 1) % images.length); }}
                 className="absolute right-2 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white transition-colors hover:bg-black/70"
                 aria-label="Next image"
               >
@@ -84,7 +86,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
             {images.map((src, i) => (
               <button
                 key={i}
-                onClick={() => setCurrent(i)}
+                onClick={() => navigate(i)}
                 className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-md bg-zinc-100 transition-opacity ${
                   i === current ? "opacity-100" : "opacity-60 hover:opacity-100"
                 }`}
@@ -125,7 +127,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
           {images.length > 1 && (
             <>
               <button
-                onClick={() => setCurrent((current - 1 + images.length) % images.length)}
+                onClick={() => navigate((current - 1 + images.length) % images.length)}
                 className="absolute left-4 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
                 aria-label="Previous image"
               >
@@ -134,7 +136,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
                 </svg>
               </button>
               <button
-                onClick={() => setCurrent((current + 1) % images.length)}
+                onClick={() => navigate((current + 1) % images.length)}
                 className="absolute right-4 top-1/2 z-10 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
                 aria-label="Next image"
               >
