@@ -13,5 +13,6 @@ pnpm dev
 bun dev
 ```
 
-Using supabase for easy backend storage
+Using supabase for easy backend storage to store client and order details
+
 Resend to send email
