@@ -2,9 +2,9 @@ import type { MDXComponents } from "mdx/types";
 import Image from "next/image";
 import React from "react";
 
-function Caption({ src, alt, caption }: { src: string; alt: string; caption: string }) {
+function Caption({ src, alt, caption, maxWidth }: { src: string; alt: string; caption: string; maxWidth?: string }) {
   return (
-    <figure style={{ margin: "1.5rem 0" }}>
+    <figure style={{ margin: "1.5rem 0", maxWidth, marginLeft: maxWidth ? "auto" : undefined, marginRight: maxWidth ? "auto" : undefined }}>
       <Image src={src} alt={alt} width={800} height={600} style={{ width: "100%", height: "auto", borderRadius: "0.5rem" }} />
       <span style={{ display: "block", marginTop: "0.5rem", textAlign: "center", fontSize: "0.875rem", color: "#71717a" }}>{caption}</span>
     </figure>
