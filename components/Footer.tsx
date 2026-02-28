@@ -56,7 +56,7 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://tiktok.com/"
+                  href="https://tiktok.com/@madewrong99"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white"
