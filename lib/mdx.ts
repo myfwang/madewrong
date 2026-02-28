@@ -19,6 +19,7 @@ export interface BlogFrontmatter {
   title: string;
   slug: string;
   date: string;
+  time?: string; // optional, e.g. "14:30" or "9:00"
   description: string;
   thumbnail: string;
   author: string;
@@ -63,7 +64,11 @@ export function getAllBlogPosts(): BlogFrontmatter[] {
       return data as BlogFrontmatter;
     })
     .filter((post) => post.published)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    .sort((a, b) => {
+      const dateA = new Date(`${a.date}${a.time ? " " + a.time : ""}`).getTime();
+      const dateB = new Date(`${b.date}${b.time ? " " + b.time : ""}`).getTime();
+      return dateB - dateA;
+    });
 }
 
 export function getBlogPostBySlug(slug: string) {
