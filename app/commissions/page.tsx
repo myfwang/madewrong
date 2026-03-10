@@ -10,15 +10,15 @@ export default function CommissionsPage() {
   const commissions = getAllCommissions();
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-16">
-      <h1 className="text-3xl font-bold tracking-tight text-zinc-900">
+    <div className="px-6 py-16">
+      <h1 className="text-3xl font-bold tracking-tight text-zinc-900 text-center">
         Commissions
       </h1>
-      <p className="mt-2 text-zinc-500">
-        A look at past custom pieces. 
+      <p className="mt-2 text-zinc-500 text-center">
+        A look at past custom pieces.
       </p>
 
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-10 flex flex-wrap justify-center gap-6">
         {commissions.map((commission) => (
           <CommissionCard key={commission.slug} commission={commission} />
         ))}

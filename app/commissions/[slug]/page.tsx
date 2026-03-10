@@ -41,6 +41,10 @@ export default async function CommissionPage({ params }: { params: Promise<{ slu
     options: { parseFrontmatter: true },
   });
 
+  if (!frontmatter.featured) {
+    notFound();
+  }
+
   return (
     <div className="mx-auto max-w-6xl px-6 py-16">
       <div className="grid gap-10 md:grid-cols-2">

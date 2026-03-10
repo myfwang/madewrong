@@ -10,10 +10,10 @@ export default function BlogPage() {
   const posts = getAllBlogPosts();
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-16">
-      <h1 className="text-3xl font-bold tracking-tight text-zinc-900">Blog</h1>
-      <p className="mt-2 text-zinc-500">
-        Blogs
+    <div className="mx-auto max-w-7xl px-6 py-16">
+      <h1 className="text-3xl font-bold tracking-tight text-zinc-900 text-center">Blog</h1>
+      <p className="mt-2 text-zinc-500 text-center">
+        Blogs, if you even bother?
       </p>
 
       <div className="mt-10 flex flex-col gap-3">

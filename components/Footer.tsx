@@ -30,11 +30,11 @@ export default function Footer() {
                   madewrong99@gmail.com
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <Link href="/order" className="hover:text-white">
                   Commission a piece &rarr;
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
 
