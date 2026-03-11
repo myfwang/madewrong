@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Made Wrong",
-  description: "Custom clothing & commissions. Every piece is one of a kind, made wrong on purpose.",
+  title: "amdewrong",
+  description: "Custom clothing & commissions.",
   icons: {
     icon: "/images/logo.png",
   },

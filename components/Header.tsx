@@ -14,7 +14,7 @@ export default function Header() {
       <header className="border-b border-zinc-800 bg-zinc-900">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
           <Link href="/" className="text-lg font-bold tracking-tight text-zinc-100">
-            madewrong
+            madew<span className="inline-block scale-x-[-1] ml-0.5">r</span>ong
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">

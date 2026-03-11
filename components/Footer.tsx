@@ -69,7 +69,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-zinc-800 py-6 text-center text-xs text-zinc-500">
-          &copy; {new Date().getFullYear()} Made Wrong. All rights reserved.
+          &copy; {new Date().getFullYear()} madewrong. All rights reserved.
         </div>
       </div>
     </footer>

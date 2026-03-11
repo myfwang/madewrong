@@ -2,14 +2,14 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center px-6 py-24 text-center">
-      <h1 className="text-5xl font-bold tracking-tight text-zinc-900 sm:text-6xl">
-        madewrong
-      </h1>
-      <p className="mt-4 max-w-md text-lg text-zinc-500">
-        Custom clothing &amp; commissions.
-      </p>
-      <div className="mt-8 flex gap-4">
+    <div className="relative flex flex-col items-center justify-between px-6 py-24 text-center min-h-screen bg-[url('/images/home-wall.jpg')] bg-cover bg-center before:absolute before:inset-0 before:bg-white/15">
+      <div className="relative z-10" />
+      <div className="relative z-10">
+        <h1 className="text-[10vw] font-bold tracking-tight text-zinc-900 whitespace-nowrap">
+          madew<span className="inline-block scale-x-[-1] ml-[0.1em]">r</span>ong
+        </h1>
+      </div>
+      <div className="relative z-10 mb-8 flex gap-4">
         <Link
           href="/commissions"
           className="rounded-md bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
